@@ -79,6 +79,34 @@ clnir <- colorRampPalette(c("red","orange","yellow")) (100)
 plot(l2011$B4_sre, col=clnir)
 dev.off()
 
+setwd("C:/lab/")
+library(raster)
+l2011 <- brick("p224r63_2011.grd")
+l2011
+clnir <- colorRampPalette(c("red","orange","yellow")) (100)
+plot(l2011$B4_sre, col=clnir)
+
+#DAY 3 plot RGB 
+plotRGB(l2011, r=3, g=2, b=1, stretch="lin")
+plotRGB(l2011, r=4, g=3, b=2, stretch="lin")
+plotRGB(l2011, r=3, g=4, b=2, stretch="lin")
+plotRGB(l2011, r=3, g=2, b=4, stretch="lin")
+#stretch
+plotRGB(l2011, r=4, g=3, b=2, stretch="hist")
+
+#build a multiframe with visible RGB 
+# (linear stretch) on top of false colors
+# (histogram stretch)
+par(mfrow=c(1,2))
+plotRGB(l2011, r=3, g=2, b=1, stretch="lin")
+plotRGB(l2011, r=3, g=4, b=1, stretch="hist")
+
+#upload the image from 1988
+l1988 <- brick("p224r63_1988.grd")
+l1988
+par(mfrow=c(1,2))
+plotRGB(l1988, r=4, g=3, b=2, stretch="lin")
+plotRGB(l1988, r=4, g=3, b=2, stretch="hist")
 
 
 
