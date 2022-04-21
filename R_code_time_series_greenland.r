@@ -85,4 +85,6 @@ plot(en113, col=cl)
 difen <- EN[[01]] - EN[[13]]
 cldif <- colorRampPalette(c('blue','white','red'))(100)
 plot(difen,col=cldif)
-
+# plotRGB of three files together
+plotRGB(en, r=1, g=7, b=13, stretch="lin")
+plotRGB(en, r=1, g=7, b=13, stretch="hist")
