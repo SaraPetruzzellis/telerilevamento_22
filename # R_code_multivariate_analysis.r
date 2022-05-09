@@ -20,13 +20,55 @@ pairs(p224r63_2011)
 # aggregate cells: resampling (ricampionamento)
 p224r63_2011res <- aggregate(p224r63_2011, fact=10)
 
-par(mfrow=c(2,1))
-plotRGB(p224r63_2011, r=4, g=3, b=2, stretch="lin")
-plotRGB(p224r63_2011res, r=4, g=3, b=2, stretch="lin")
+g1 <- ggRGB(p224r63_2011, 4,3,2)
+g2 <- ggRGB(p224r63_2011res, 4,3,2)
 
-p224r63_2011res_pca <- rasterPCA(p224r63_2011res)
+g1+g2
 
-summary(p224r63_2011res_pca$model)
+# aggressive resampling 
+p224r63_2011res100 <- aggregate(p224r63_2011, fact=100)
 
-# dev.off()
-plotRGB(p224r63_2011res_pca$map, r=1, g=2, b=3, stretch="lin")
+g1 <- ggRGB(p224r63_2011, 4,3,2)
+g2 <- ggRGB(p224r63_2011res, 4,3,2)
+g3 <- ggRGB(p224r63_2011res100, 4,3,2)
+
+g1+g2+g3
+
+# PCA analysis
+p224r63_2011respca <- rasterPCA(p224r63_2011res)
+
+# $call
+# $model
+# $map
+
+summary(p224r63_2011respca$model)
+
+plot(p224r63_2011respca$map)
+
+g1 <- ggplot() + 
+geom_raster(p224r63_2011respca$map, mapping=aes(x=x, y=y, fill=PC1)) + 
+scale_fill_viridis(option = "inferno") +
+ggtitle("PC1")
+
+g2 <- ggplot() + 
+geom_raster(p224r63_2011respca$map, mapping=aes(x=x, y=y, fill=PC7)) + 
+scale_fill_viridis(option = "inferno") +
+ggtitle("PC7")
+
+g1+g2
+
+g3 <- ggplot() + 
+geom_raster(p224r63_2011res, mapping=aes(x=x, y=y, fill=B4_sre)) + 
+scale_fill_viridis(option = "inferno") +
+ggtitle("NIR")
+
+g1+g3
+
+g4 <- ggRGB(p224r63_2011, 2, 3, 4, stretch="hist")
+
+g1+g4
+
+plotRGB(p224r63_2011respca$map, 1, 2, 3, stretch="lin")
+plotRGB(p224r63_2011respca$map, 5, 6, 7, stretch="lin")
+
+
