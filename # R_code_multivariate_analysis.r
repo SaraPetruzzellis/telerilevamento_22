@@ -1,6 +1,10 @@
+# R code for multivariate analysis
 library(raster)
 library(RStoolbox)
-# setwd("C:/lab/")
+library(ggplot2)
+library(patchwork)
+library(viridis)
+setwd("C:/lab/")
 
 p224r63_2011 <- brick("p224r63_2011_masked.grd")
 
