@@ -4,6 +4,7 @@ library(raster)
 library(ggplot2)
 library(RStoolbox)
 library(viridisLite)
+library(patchwork)
 
 #import the Simulaun image
 sen <- brick ("sentinel.png")
