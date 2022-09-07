@@ -93,9 +93,9 @@ plot(P1999_pca$map)
 dev.off()
 
 #assign a name for all the pca components
-pc1_1999 <- P2021_pca$map$PC1
-pc2_1999 <- P2021_pca$map$PC2
-pc3_1999 <- P2021_pca$map$PC3
+pc1_1999 <- P1999_pca$map$PC1
+pc2_1999 <- P1999_pca$map$PC2
+pc3_1999 <- P1999_pca$map$PC3
 
 g1 <- ggplot() + 
   geom_raster(P1999_pca$map, mapping=aes(x=x, y=y, fill=PC1)) + 
@@ -113,6 +113,8 @@ g3 <- ggplot() +
   ggtitle("PC3")
 
 g1+g2+g3
+
+dev.off()
 
 
 #Principal component analysis to extract data with many variables and create visualizations to display that data (PCA)
@@ -162,10 +164,9 @@ cl <- colorRampPalette(c("#FFFFCC","#C7E9B4","#7FCDBB","#40B6C4","#2C7FB8" ,"#25
 #plot the difference between the first and the second component
 plot(diff, col=cl, main = "ice mass variation")
 
-
 #standard deviation of the difference 
 #calculate heterogeneity in a 3x3 window for more definition
 sd3 <- focal(diff, matrix(1/9, 3, 3), fun=sd)
 sd3
-cl <- ColorRampPalette(c("#FF5500", "#FF7100", "#FF8D00", "#FFAA00")) (100)
+cl <- colorRampPalette(c("magenta", "yellow", "green", "blue")) (100)
 plot(sd3, col=cl, main = "ice mass variation")
