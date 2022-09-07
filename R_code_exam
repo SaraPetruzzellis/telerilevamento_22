@@ -176,7 +176,7 @@ cl <- colorRampPalette(c("#FFFFCC","#C7E9B4","#7FCDBB","#40B6C4","#2C7FB8" ,"#25
 
 
 #plot the difference between the first and the second component
-plot(diff, col=cl, main = "ice mass variation")
+plot(diff, col=cl, main = "Ice mass variation")
 
 #standard deviation of the difference 
 #calculate heterogeneity in a 3x3 window for more definition
