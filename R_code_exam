@@ -1,6 +1,8 @@
 #Hello! this is the script for my R project
-#we are going to see how the Peyto Glacier changed in the last 22 years
+#we are going to see how the Peyto Glacier changed from 1999 to 2021
+#and how much ice mass is lost
 
+#first things first
 #set the working directory
 
 setwd("C:/lab/telerilevamento_esame")
@@ -13,7 +15,7 @@ library(patchwork)
 install.packages("viridis")
 library(viridis)
 
-#import the images of the Peyto Glacier from 1999 and 2021
+#import the images of the Peyto Glacier from 1999 and 2021 
 
 P1999 <- raster("peyto_etm_1999236_lrg.jpg")
 P1999
@@ -30,8 +32,11 @@ P1999
 #names      : peyto_etm_1999236_lrg 
 #values     : 0, 255  (min, max)
 
+# image from 2021
+
 P2021 <- raster("peyto_oli_2021224_lrg.jpg")
 P2021
+
 #let's see the avaiable informations
 #> P2021
 #class      : RasterLayer 
@@ -53,10 +58,9 @@ plot(P2021, col=cl)
 #to close the window
 dev.off()
 
-#multiframe of the images to visualize them both 
+#multiframe of the images to visualize them both in the same plot 
 
 par(mfrow=c(1,2))
-
 plot(P1999, col=cl)
 plot(P2021, col=cl)
 dev.off()
@@ -97,6 +101,7 @@ pc1_1999 <- P1999_pca$map$PC1
 pc2_1999 <- P1999_pca$map$PC2
 pc3_1999 <- P1999_pca$map$PC3
 
+#plot of the components
 g1 <- ggplot() + 
   geom_raster(P1999_pca$map, mapping=aes(x=x, y=y, fill=PC1)) + 
   scale_fill_viridis(option = "mako") +
@@ -112,6 +117,7 @@ g3 <- ggplot() +
   scale_fill_viridis(option = "mako") +
   ggtitle("PC3")
 
+#all the components in the same plot 
 g1+g2+g3
 
 dev.off()
@@ -137,6 +143,7 @@ pc1_2021 <- P2021_pca$map$PC1
 pc2_2021 <- P2021_pca$map$PC2
 pc3_2021 <- P2021_pca$map$PC3
 
+#plot of the components
 im1 <- ggplot() + 
   geom_raster(P2021_pca$map, mapping=aes(x=x, y=y, fill=PC1)) + 
   scale_fill_viridis(option = "mako") +
@@ -152,9 +159,10 @@ im3 <- ggplot() +
   scale_fill_viridis(option = "mako") +
   ggtitle("PC3")
 
+#all the components in the same plot
 im1+im2+im3
 
-#calcolate the differenze between the components
+#calcolate the differenze between the first components
 diff <- pc1_1999 - pc1_2021
 
 #assign a color palette 
@@ -168,5 +176,7 @@ plot(diff, col=cl, main = "ice mass variation")
 #calculate heterogeneity in a 3x3 window for more definition
 sd3 <- focal(diff, matrix(1/9, 3, 3), fun=sd)
 sd3
+
+#plot a map so we can see all the areas with the highest heterogeneity
 cl <- colorRampPalette(c("magenta", "yellow", "green", "blue")) (100)
-plot(sd3, col=cl, main = "ice mass variation")
+plot(sd3, col=cl, main = "Standard deviation")
