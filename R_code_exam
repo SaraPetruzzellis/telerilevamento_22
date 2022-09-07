@@ -1,0 +1,170 @@
+#Hello! this is the script for my R project
+#we are going to see how the Peyto Glacier changed in the last 22 years
+
+#set the working directory
+
+setwd("C:/lab/telerilevamento_esame")
+
+#import and install all the packaged needed for the project
+library(RStoolbox)
+library(raster)
+library(ggplot2)
+library(patchwork)
+install.packages("viridis")
+library(viridis)
+
+#import the images of the Peyto Glacier from 1999 and 2021
+
+P1999 <- raster("peyto_etm_1999236_lrg.jpg")
+P1999
+#let's see the avaiable informations
+
+#> P1999
+#class      : RasterLayer 
+#band       : 1  (of  3  bands)
+#dimensions : 1446, 1571, 2271666  (nrow, ncol, ncell)
+#resolution : 1, 1  (x, y)
+#extent     : 0, 1571, 0, 1446  (xmin, xmax, ymin, ymax)
+#crs        : NA 
+#source     : peyto_etm_1999236_lrg.jpg 
+#names      : peyto_etm_1999236_lrg 
+#values     : 0, 255  (min, max)
+
+P2021 <- raster("peyto_oli_2021224_lrg.jpg")
+P2021
+#let's see the avaiable informations
+#> P2021
+#class      : RasterLayer 
+#band       : 1  (of  3  bands)
+#dimensions : 1446, 1571, 2271666  (nrow, ncol, ncell)
+#resolution : 1, 1  (x, y)
+#extent     : 0, 1571, 0, 1446  (xmin, xmax, ymin, ymax)
+#crs        : NA 
+#source     : peyto_oli_2021224_lrg.jpg 
+#names      : peyto_oli_2021224_lrg 
+#values     : 0, 255  (min, max)
+
+
+# plotting the images with a color palette to have a first look 
+cl <- colorRampPalette(c("#FFFFCC","#C7E9B4","#7FCDBB","#40B6C4","#2C7FB8" ,"#253494")) (100)
+
+plot(P1999, col=cl)
+plot(P2021, col=cl)
+#to close the window
+dev.off()
+
+#multiframe of the images to visualize them both 
+
+par(mfrow=c(1,2))
+
+plot(P1999, col=cl)
+plot(P2021, col=cl)
+dev.off()
+
+#visualize the images with RGB colors using ggRGB
+# NIR= band1
+# red = band2 
+# green = band3 
+
+P1999 <- brick("peyto_etm_1999236_lrg.jpg")
+g1 <- ggRGB (P1999, r =3, g = 2, b = 1, stretch = "lin")
+
+P2021 <- brick("peyto_oli_2021224_lrg.jpg")
+g2 <- ggRGB (P2021, r =3, g = 2, b = 1, stretch = "lin")
+
+#plot both in the same page 
+g1+g2
+
+#Principal component analysis to extract data with many variables and create visualizations to display that data (PCA)
+#for 1999 image 
+P1999_pca <- rasterPCA(P1999)
+
+#Visualize the importance of components 
+summary(P1999_pca$model)
+
+#Importance of components:
+                        #Comp.1      Comp.2      Comp.3
+#Standard deviation     112.849604 15.52086859 3.920285709
+#Proportion of Variance   0.980274  0.01854298 0.001182995
+#Cumulative Proportion    0.980274  0.99881701 1.000000000
+
+#plot a pca map (the PC1 component has 98,02% of variability)
+plot(P1999_pca$map)
+dev.off()
+
+#assign a name for all the pca components
+pc1_1999 <- P2021_pca$map$PC1
+pc2_1999 <- P2021_pca$map$PC2
+pc3_1999 <- P2021_pca$map$PC3
+
+g1 <- ggplot() + 
+  geom_raster(P1999_pca$map, mapping=aes(x=x, y=y, fill=PC1)) + 
+  scale_fill_viridis(option = "mako") +
+  ggtitle("PC1")
+
+g2 <- ggplot() + 
+  geom_raster(P1999_pca$map, mapping=aes(x=x, y=y, fill=PC2)) + 
+  scale_fill_viridis(option = "mako") +
+  ggtitle("PC2")
+
+g3 <- ggplot() + 
+  geom_raster(P1999_pca$map, mapping=aes(x=x, y=y, fill=PC3)) + 
+  scale_fill_viridis(option = "mako") +
+  ggtitle("PC3")
+
+g1+g2+g3
+
+
+#Principal component analysis to extract data with many variables and create visualizations to display that data (PCA)
+#for 2021 image 
+P2021_pca <- rasterPCA(P2021)
+
+#Visualize the importance of components 
+summary(P2021_pca$model)
+#Importance of components:
+                        #Comp.1      Comp.2      Comp.3
+#Standard deviation     95.1994343 16.48198595 3.859144962
+#Proportion of Variance  0.9693514  0.02905572 0.001592923
+#Cumulative Proportion   0.9693514  0.99840708 1.000000000
+
+#plot a pca map (the PC1 component has 96,93% of variability)
+plot(P2021_pca$map)
+
+#assign a name for all the pca components
+pc1_2021 <- P2021_pca$map$PC1
+pc2_2021 <- P2021_pca$map$PC2
+pc3_2021 <- P2021_pca$map$PC3
+
+im1 <- ggplot() + 
+  geom_raster(P2021_pca$map, mapping=aes(x=x, y=y, fill=PC1)) + 
+  scale_fill_viridis(option = "mako") +
+  ggtitle("PC1")
+
+im2 <- ggplot() + 
+  geom_raster(P2021_pca$map, mapping=aes(x=x, y=y, fill=PC1)) + 
+  scale_fill_viridis(option = "mako") +
+  ggtitle("PC2")
+
+im3 <- ggplot() + 
+  geom_raster(P2021_pca$map, mapping=aes(x=x, y=y, fill=PC3)) + 
+  scale_fill_viridis(option = "mako") +
+  ggtitle("PC3")
+
+im1+im2+im3
+
+#calcolate the differenze between the components
+diff <- pc1_1999 - pc1_2021
+
+#assign a color palette 
+cl <- colorRampPalette(c("#FFFFCC","#C7E9B4","#7FCDBB","#40B6C4","#2C7FB8" ,"#253494")) (100)
+
+
+#plot the difference between the first and the second component
+plot(diff, col=cl, main = "ice mass variation")
+
+
+#standard deviation of the difference 
+#calculate heterogeneity in a 3x3 window for more definition
+sd3 <- focal(diff, matrix(1/9, 3, 3), fun=sd)
+sd3
+plot(sd3, col=cl, main = "ice mass variation")
