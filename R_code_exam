@@ -167,4 +167,5 @@ plot(diff, col=cl, main = "ice mass variation")
 #calculate heterogeneity in a 3x3 window for more definition
 sd3 <- focal(diff, matrix(1/9, 3, 3), fun=sd)
 sd3
+cl <- ColorRampPalette(c("#FF5500", "#FF7100", "#FF8D00", "#FFAA00")) (100)
 plot(sd3, col=cl, main = "ice mass variation")
