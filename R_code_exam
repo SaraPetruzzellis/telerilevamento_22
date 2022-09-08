@@ -14,19 +14,20 @@
 setwd("C:/lab/telerilevamento_esame")
 
 #import and install all the packaged needed for the project
-library(raster)
-library(RStoolbox)
-library(ggplot2)
-library(patchwork)
+
+library(raster)    #analyzing and modeling of spatial data
+library(RStoolbox) #toolbox for remote sensing image processing 
+library(ggplot2)   #for creating graphics
+library(patchwork) #combine separate ggplots into the same graphic
 install.packages("viridis")
-library(viridis)
+library(viridis)   #color scales
 
 #import the images of the Peyto Glacier from 1999 and 2021 
 
-P1999 <- raster("peyto_etm_1999236_lrg.jpg")
+P1999 <- brick("peyto_etm_1999236_lrg.jpg")
 P1999
-#let's see the avaiable informations
 
+#let's see the avaiable informations
 #> P1999
 #class      : RasterLayer 
 #band       : 1  (of  3  bands)
@@ -39,8 +40,7 @@ P1999
 #values     : 0, 255  (min, max)
 
 # image from 2021
-
-P2021 <- raster("peyto_oli_2021224_lrg.jpg")
+P2021 <- brick("peyto_oli_2021224_lrg.jpg")
 P2021
 
 #let's see the avaiable informations
@@ -58,7 +58,6 @@ P2021
 
 # plotting the images with a color palette to have a first look 
 cl <- colorRampPalette(c("#FFFFCC","#C7E9B4","#7FCDBB","#40B6C4","#2C7FB8" ,"#253494")) (100)
-
 plot(P1999, col=cl, main="Peyto glacier 1999")
 plot(P2021, col=cl, main="Peyto glacier 2021")
 #to close the window
@@ -77,20 +76,18 @@ dev.off()
 
 cl <- colorRampPalette(c("#FFFFCC","#C7E9B4","#7FCDBB","#40B6C4","#2C7FB8" ,"#253494")) (100)
 par(mfrow=c(1,2))
-plot(P1999$peyto_etm_1999236_lrg.1, col=cl, main="Peyto glacier 1999")
-plot(P2021$peyto_oli_2021224_lrg.1, col=cl, main="Peyto glacier 2021")
+plot(P1999, main="Peyto glacier 1999")
+plot(P2021, main="Peyto glacier 2021")
 dev.off()
 
 #visualize the images with RGB colors using ggRGB
-# NIR= band1
-# red = band2 
-# green = band3 
+# NIR= band3
+# red = band1
+# green = band2 
 
-P1999 <- brick("peyto_etm_1999236_lrg.jpg")
-g1 <- ggRGB (P1999, r =3, g = 2, b = 1, stretch = "lin")
+g1 <- ggRGB (P1999, r =1, g = 2, b = 3, stretch = "lin")
 
-P2021 <- brick("peyto_oli_2021224_lrg.jpg")
-g2 <- ggRGB (P2021, r =3, g = 2, b = 1, stretch = "lin")
+g2 <- ggRGB (P2021, r =1, g = 2, b = 3, stretch = "lin")
 
 #plot both in the same page 
 g1+g2
@@ -101,8 +98,8 @@ jpeg("g1+g2.jpg", 900, 900)
 plot(g1+g2, col=cl, main="RGB")
 dev.off()
 
-#Principal component analysis to extract data with many variables and create visualizations to display that data (PCA)
-#for 1999 image 
+#######Principal component analysis to extract data with many variables
+#and create visualizations to display that data (PCA) for 1999 image#######
 P1999_pca <- rasterPCA(P1999)
 
 #Visualize the importance of components 
@@ -123,7 +120,7 @@ pc1_1999 <- P1999_pca$map$PC1
 pc2_1999 <- P1999_pca$map$PC2
 pc3_1999 <- P1999_pca$map$PC3
 
-#plot of the components
+#plot of the components with viridis 
 g1 <- ggplot() + 
   geom_raster(P1999_pca$map, mapping=aes(x=x, y=y, fill=PC1)) + 
   scale_fill_viridis(option = "mako") +
@@ -148,7 +145,9 @@ dev.off()
 jpeg("PC_1999.jpg", 900, 300)
 plot(g1+g2+g3, col=cl, main="Principal component analysis")
 dev.off()
-#Principal component analysis to extract data with many variables and create visualizations to display that data (PCA)
+
+#Principal component analysis to extract data with many 
+#variables and create visualizations to display that data (PCA)
 #for 2021 image 
 P2021_pca <- rasterPCA(P2021)
 
@@ -168,7 +167,7 @@ pc1_2021 <- P2021_pca$map$PC1
 pc2_2021 <- P2021_pca$map$PC2
 pc3_2021 <- P2021_pca$map$PC3
 
-#plot of the components
+#plot of the components with viridis
 im1 <- ggplot() + 
   geom_raster(P2021_pca$map, mapping=aes(x=x, y=y, fill=PC1)) + 
   scale_fill_viridis(option = "mako") +
@@ -193,12 +192,11 @@ jpeg("PC_2021.jpg", 900, 300)
 plot(im1+im2+im3, col=cl, main="Principal component analysis")
 dev.off()
 
-#calculate the differenz between the first components
+#######calculate the difference between the first components#######
 diff <- pc1_1999 - pc1_2021
 
 #assign a color palette 
 cl <- colorRampPalette(c("purple", "yellow","orange","red")) (100)
-
 #plot the difference between the first and the second component
 plot(diff, col=cl, main = "Ice mass variation")
 dev.off()
@@ -208,7 +206,7 @@ jpeg("difference.jpg", 900, 900)
 plot(diff, col=cl, main="Difference")
 dev.off()
 
-#standard deviation of the difference 
+########standard deviation of the difference####### 
 #calculate heterogeneity in a 3x3 window for more definition
 sd3 <- focal(diff, matrix(1/9, 3, 3), fun=sd)
 sd3
