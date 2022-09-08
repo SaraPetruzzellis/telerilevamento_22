@@ -174,7 +174,7 @@ im1 <- ggplot() +
   ggtitle("PC1")
 
 im2 <- ggplot() + 
-  geom_raster(P2021_pca$map, mapping=aes(x=x, y=y, fill=PC1)) + 
+  geom_raster(P2021_pca$map, mapping=aes(x=x, y=y, fill=PC2)) + 
   scale_fill_viridis(option = "mako") +
   ggtitle("PC2")
 
