@@ -106,7 +106,7 @@ P1999_pca <- rasterPCA(P1999)
 summary(P1999_pca$model)
 
 #Importance of components:
-#Comp.1      Comp.2      Comp.3
+                          #Comp.1      Comp.2      Comp.3
 #Standard deviation     112.849604 15.52086859 3.920285709
 #Proportion of Variance   0.980274  0.01854298 0.001182995
 #Cumulative Proportion    0.980274  0.99881701 1.000000000
@@ -154,7 +154,7 @@ P2021_pca <- rasterPCA(P2021)
 #Visualize the importance of components 
 summary(P2021_pca$model)
 #Importance of components:
-#Comp.1      Comp.2      Comp.3
+                         #Comp.1      Comp.2      Comp.3
 #Standard deviation     95.1994343 16.48198595 3.859144962
 #Proportion of Variance  0.9693514  0.02905572 0.001592923
 #Cumulative Proportion   0.9693514  0.99840708 1.000000000
