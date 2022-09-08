@@ -81,9 +81,9 @@ plot(P2021, main="Peyto glacier 2021")
 dev.off()
 
 #visualize the images with RGB colors using ggRGB
-# NIR= band3
 # red = band1
 # green = band2 
+# blue= band3
 
 g1 <- ggRGB (P1999, r =1, g = 2, b = 3, stretch = "lin")
 
